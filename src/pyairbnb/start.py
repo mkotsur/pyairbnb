@@ -101,7 +101,8 @@ def get_details(room_url: str = None, room_id: int = None, domain: str = "www.ai
     return data
 
 def search_all(check_in: str, check_out: str, ne_lat: float, ne_long: float, sw_lat: float, sw_long: float,
-               zoom_value: int, price_min: int, price_max: int, place_type: str = "", amenities: list = [], free_cancellation: bool = False, currency: str = "USD", language: str = "en", proxy_url: str = ""):
+               zoom_value: int, price_min: int, price_max: int, place_type: str = "", amenities: list = [], free_cancellation: bool = False, currency: str = "USD", language: str = "en", proxy_url: str = "",
+               min_bedrooms: int = 0, min_beds: int = 0, adults: int = 0, children: int = 0, infants: int = 0):
     """
     Performs a paginated search for all rooms within specified geographic bounds.
 
@@ -128,7 +129,8 @@ def search_all(check_in: str, check_out: str, ne_lat: float, ne_long: float, sw_
     while True:
         results_raw = search.get(
             api_key, cursor, check_in, check_out, ne_lat, ne_long, sw_lat, sw_long, zoom_value, 
-            currency, place_type, price_min, price_max, amenities, free_cancellation, language, proxy_url
+            currency, place_type, price_min, price_max, amenities, free_cancellation, language, proxy_url,
+            min_bedrooms=min_bedrooms, min_beds=min_beds, adults=adults, children=children, infants=infants
         )
         paginationInfo = utils.get_nested_value(results_raw,"data.presentation.staysSearch.results.paginationInfo",{})
         results = standardize.from_search(results_raw)

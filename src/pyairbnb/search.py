@@ -32,7 +32,7 @@ headers_global = {
     "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
 }
 
-def get(api_key:str, cursor:str, check_in:str, check_out:str, ne_lat:float, ne_long:float, sw_lat:float, sw_long:float, zoom_value:int, currency:str, place_type: str, price_min: int, price_max: int, amenities: list, free_cancellation: bool, language: str, proxy_url:str):
+def get(api_key:str, cursor:str, check_in:str, check_out:str, ne_lat:float, ne_long:float, sw_lat:float, sw_long:float, zoom_value:int, currency:str, place_type: str, price_min: int, price_max: int, amenities: list, free_cancellation: bool, language: str, proxy_url:str, min_bedrooms: int = 0, min_beds: int = 0, adults: int = 0, children: int = 0, infants: int = 0):
     base_url = "https://www.airbnb.com/api/v3/StaysSearch/9f945886dcc032b9ef4ba770d9132eb0aa78053296b5405483944c229617b00b"
     query_params = {
         "operationName": "StaysSearch",
@@ -47,6 +47,9 @@ def get(api_key:str, cursor:str, check_in:str, check_out:str, ne_lat:float, ne_l
         {"filterName":"flexibleTripLengths","filterValues":["one_week"]},
         {"filterName":"itemsPerGrid","filterValues":["50"]},#if you read this, this is items returned number, this can bex exploited  ;)
         {"filterName":"monthlyLength","filterValues":["3"]},
+        {"filterName": "adults", "filterValues": [str(adults)]},
+        {"filterName": "children", "filterValues": [str(children)]},
+        {"filterName": "infants", "filterValues": [str(infants)]},
         {"filterName":"monthlyStartDate","filterValues":["2024-02-01"]},
         {"filterName":"neLat","filterValues":[str(ne_lat)]},
         {"filterName":"neLng","filterValues":[str(ne_long)]},
@@ -74,6 +77,11 @@ def get(api_key:str, cursor:str, check_in:str, check_out:str, ne_lat:float, ne_l
             {"filterName":"checkout","filterValues":[check_out]},
             {"filterName":"priceFilterNumNights","filterValues":[str(days)]},
         ])
+
+    if min_bedrooms > 0:
+        rawParams.append(
+            {"filterName": "min_bedrooms", "filterValues": str(min_bedrooms)}
+        )
 
     if place_type is not None and place_type in ("Private room","Entire home/apt"):
         rawParams.append({"filterName":"room_types","filterValues": [place_type]})
